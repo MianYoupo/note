@@ -1006,7 +1006,89 @@ transform-style:flat | preserve-3d
 ### 观看视角
 
 ``` css
+@keyframes 相对于 transition 对过程和细节有更强的控制
 
+关键帧
+from 表示起点，to 表示终点，使用百分数表示动画时间。
+
+时间点
+必须使用百分号，时间点没有顺序要求。未设置0% 100%系统将使用初始状态。
+
+同时声明
+时间点是可以一起声明的
+25%,75% 
+{
+  background: #9b59b6;
+  border-radius: 50%;
+}
+```
+
+
+
+### 隐藏背面
+
+``` css
+backface-visibility:visible | hidden
+```
+## 过度延迟
+
+``` css
+transition-property: all | none
+多个属性使用逗号分隔
+
+transitioned: propertyName | elapsedTime | pseudoElement | isTrusted
+控制过渡结束后执行的js事件。
+简写属性会触发多次事件。
+
+transition-duration
+过渡时间。
+
+transition-timing-function
+transition-delay
+
+transition
+组合书写 
+```
+
+
+
+## 帧动画
+
+``` css
+animation-name 可以为多个动画命名，使用逗号隔开。如果多个动画有重复属性，以后面的动画属性为优先。
+
+动画时间
+animation-duration 使用 m, ms为时间单位。
+
+不要在两个动画中控制同一属性。
+
+不是所有的css属性都有过渡效果。中间值的属性都可以使用css动画
+
+animation-iteration-count:infinite 无限动画。
+
+animation-direction:normal | reverse | alternate | alternate-reverse
+正常方向 | 相反 | 折返 | 反向折返
+
+延迟动画
+animation-delay
+
+动画速率
+animation-timing-function:
+
+步进速度
+steps(n,start)
+steps(n,end)
+step-start = steps(1,start)
+step-end = steps(1,end)
+
+播放状态
+animation-play-state: paused | running
+
+填充模式
+animation-fill-mode:none | backwards | forwards | both
+
+组合定义
+animation
 ```
 
 
@@ -1038,6 +1120,19 @@ link
   
 多设备支持
 <link rel="stylesheet" href="screen.css" media="screen,print"> 
+  
+设备方向
+portrait 竖屏
+landscape 横屏
+  
+查询条件
+条件表达式需要放在括号中
+and , not only
+  
+查询特性
+常用特性
+orientation: landscape | portrait
+width | height | min-width | max-width | min-height | max-height
 ```
 
 
@@ -1085,4 +1180,6 @@ rem是在根元素中定义的font-size
 rem用来在多个设备响应处理时使用
 html元素也可以使用:root选择器选择
 ```
+
+
 
