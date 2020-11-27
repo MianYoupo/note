@@ -278,7 +278,7 @@ let arr = Array.from({
 
 
 
-### Array.from()
+### Array.of()
 
 可以创建数组，不固定长度。
 
@@ -602,4 +602,688 @@ Symbol函数前不能使用new命令，否则会报错。这是因为生成的 S
 Symbol.keyFor()方法返回一个已登记的 Symbol 类型值的key。
 
 ### 作为属性名
+
+``` javascript
+const stu1 = Symbol('李四')
+const stu2 = Symbol('李四')
+const grade = {
+    [stu1]: {
+        address: 'yyy',
+        tel: '222'
+    },
+    [stu2]: {
+        address: 'zzz',
+        tel: '333'
+    },
+}
+console.log(grade)
+console.log(grade[stu1])
+console.log(grade[stu2])
+```
+
+### 属性遍历
+
+``` javascript
+for...in //无法发现 symbol
+for...of Object.keys() //无法发现 symbol
+for...of Object.getOwnPropertySymbol() //只能发现 symbol
+for...of Reflect.ownKeys() //全部发现
+
+```
+
+###  消除魔术字符串
+
+``` javascript
+const shapeType = {
+    triangle: Symbol(),
+    circle: Symbol()
+}
+
+function getArea(shape) {
+    let area = 0
+    switch (shape) {
+        case shapeType.triangle:
+            area = 1
+            break
+        case shapeType.circle:
+            area = 2
+            break
+    }
+    return area
+}
+console.log(getArea(shapeType.triangle))
+```
+
+## Set
+
+ES6 提供了新的数据结构 Set。它类似于数组，但是成员的值都是唯一的，没有重复的值。
+
+```js
+ // 删除指定数据
+  s.delete('hello') // true
+  // 删除全部数据
+  s.clear()
+
+  // 判断是否包含数据项，返回 true 或 false
+  s.has('hello') // true
+  // 计算数据项总数
+  s.size // 2
+
+//数组去重
+let arr = [1, 2, 3, 4, 2, 3]
+let s = new Set(arr)
+
+//合并去重，并集
+let arr1 = [1, 2, 3, 4]
+let arr2 = [2, 3, 4, 5, 6]
+let s = new Set([...arr1, ...arr2])
+console.log(s)
+console.log([...s])
+console.log(Array.from(s))
+
+//交集
+let s1 = new Set(arr1)
+let s2 = new Set(arr2)
+let result = new Set(arr1.filter(item => s2.has(item)))
+console.log(Array.from(result))
+
+//差集
+let arr3 = new Set(arr1.filter(item => !s2.has(item)))
+let arr4 = new Set(arr2.filter(item => !s1.has(item)))
+console.log(arr3)
+console.log(arr4)
+console.log([...arr3, ...arr4])
+```
+
+### 遍历方式
+
+keys()：返回键名的遍历器
+values()：返回键值的遍历器
+entries()：返回键值对的遍历器
+forEach()：使用回调函数遍历每个成员
+for...of：可以直接遍历每个成员
+
+``` javascript
+  console.log(s.keys()) // SetIterator {"hello", "goodbye"}
+  console.log(s.values()) // SetIterator {"hello", "goodbye"}
+  console.log(s.entries()) // SetIterator {"hello" => "hello", "goodbye" => "goodbye"}
+  s.forEach(item => {
+      console.log(item) // hello // goodbye
+  })
+
+  for (let item of s) {
+      console.log(item)
+  }
+
+  for (let item of s.keys()) {
+      console.log(item)
+  }
+
+  for (let item of s.values()) {
+      console.log(item)
+  }
+
+  for (let item of s.entries()) {
+      console.log(item[0], item[1])
+  }
+```
+
+### WeakSet
+
+```  javascript
+let ws = new WeakSet()
+const obj1 = {
+    name: 'imooc'
+}
+const obj2 = {
+    age: 5
+}
+ws.add(obj1)
+ws.add(obj2)
+ws.delete(obj1)
+console.log(ws)
+console.log(ws.has(obj2))
+```
+
+## Map
+
+Object 结构提供了“字符串—值”的对应，Map 结构提供了“值—值”的对应
+
+``` javascript
+let map = new Map([iterable])
+
+//添加
+let keyObj = {}
+let keyFunc = function() {}
+let keyString = 'a string'
+
+// 添加键
+map.set(keyString, "和键'a string'关联的值")
+map.set(keyObj, '和键keyObj关联的值')
+map.set(keyFunc, '和键keyFunc关联的值')
+
+// 删除指定的数据
+map.delete(keyObj)
+// 删除所有数据
+map.clear()
+
+// 统计所有 key-value 的总数
+console.log(map.size) //2
+// 判断是否有 key-value
+console.log(map.has(keyObj)) // true
+
+console.log(map.get(keyObj)) // 和键keyObj关联的值
+```
+
+
+
+### 遍历方式
+
+keys() 返回一个新的 Iterator 对象。它包含按照顺序插入 Map 对象中每个元素的 key 值
+values() 方法返回一个新的 Iterator 对象。它包含按顺序插入Map对象中每个元素的 value 值
+entries() 方法返回一个新的包含 [key, value] 对的 Iterator ? 对象，返回的迭代器的迭代顺序与 Map 对象的插入顺序相同
+forEach() 方法将会以插入顺序对 Map 对象中的每一个键值对执行一次参数中提供的回调函数
+for...of 可以直接遍历每个成员
+
+```js
+   map.forEach((value, key) => console.log(value, key))
+
+   for (let [key, value] of map) {
+       console.log(key, value)
+   }
+
+   for (let key of map.keys()) {
+       console.log(key)
+   }
+
+   for (let value of map.values()) {
+       console.log(value)
+   }
+
+   for (let [key, value] of map.entries()) {
+       console.log(key, value)
+   }
+```
+
+- **键的类型**
+
+  一个Object的键只能是字符串或者 Symbols，但一个 Map 的键可以是任意值，包括函数、对象、基本类型。
+
+- **键的顺序**
+
+  Map 中的键值是有序的，而添加到对象中的键则不是。因此，当对它进行遍历时，Map 对象是按插入的顺序返回键值。
+
+- **键值对的统计**
+
+  你可以通过 size 属性直接获取一个 Map 的键值对个数，而 Object 的键值对个数只能手动计算。
+
+- **键值对的遍历**
+
+  Map 可直接进行迭代，而 Object 的迭代需要先获取它的键数组，然后再进行迭代。
+
+- **性能**
+
+  Map 在涉及频繁增删键值对的场景下会有些性能优势。
+
+### Weakmap
+
+WeakMap结构与Map结构类似，也是用于生成键值对的集合。
+
+## String
+
+ES6 对这一点做出了改进，只要将码点放入大括号，就能正确解读该字符。
+
+```js
+"\u{20BB7}"
+// "𠮷"
+```
+
+### 遍历器接口
+
+```js
+for (let item of 'imooc') {
+    console.log(item)
+}
+```
+
+
+
+### Tag Literal
+
+函数调用的时候有点特别
+
+```js
+function Price(strings, type) {
+    let s1 = strings[0]
+    const retailPrice = 20
+    const wholesalePrice = 16
+    let txt = ''
+    if (type === 'retail') {
+        txt = `购买单价是：${retailPrice}` 
+    } else {
+        txt = `批发价是：${wholesalePrice}` 
+    }
+    return `${s1}${txt}` 
+}
+//这里
+let showTxt = Price `您此次的${'retail'}` 
+
+console.log(showTxt) //您此次的购买单价是：20
+```
+
+
+
+### 拓展方法
+
+```javascript
+//识别大于0xFFFF的字符
+String.prototype.fromCodePoint()
+String.prototype.includes()
+String.prototype.indexof()
+String.prototype.startsWith()
+String.prototype.endsWith()
+String.prototype.repeat()
+```
+
+## RefExp
+
+#### y修饰符
+
+y修饰符的作用与g修饰符类似，也是全局匹配
+
+不同之处在于，g修饰符只要剩余位置中存在匹配就可，而y修饰符确保匹配必须从剩余的第一个位置开始
+
+```javascript
+const regexp = /a/g
+
+// 指定从2号位置（y）开始匹配
+regexp.lastIndex = 2
+
+// 匹配成功
+const match = regexp.exec('xaya')
+
+// 在3号位置匹配成功
+console.log(match.index) // 3
+
+// 下一次匹配从4号位开始
+console.log(regexp.lastIndex) // 4
+
+// 4号位开始匹配失败
+regexp.exec('xaxa') // null
+```
+
+上面代码中，lastIndex属性指定每次搜索的开始位置
+
+y修饰符同样遵守lastIndex属性，但是要求必须在lastIndex指定的位置发现匹配
+
+> sticky 模式在正则匹配过程中只会影响两件事：
+>
+> - 匹配必须从 re.lastIndex 开始（相当于正则表达中的 ^）
+> - 如果匹配到会修改 re.lastIndex（相当于 g 模式）
+
+### u修饰符
+
+## Number
+
+### 二进制与十进制转换
+
+```javascript
+const a = 5 // 101
+console.log(a.toString(2))
+
+const b = 101
+console.log(parseInt(b, 2))
+```
+
+ES6 提供了二进制和八进制数值的新的写法，分别用前缀0b（或0B）和0o（或0O）表示。
+
+### 新增方法
+
+```javascript
+Number.isFinite()
+Number.isNaN()
+Number.parseInt()
+Number.parseFloat()
+Number.isInteger()
+Number.MAX_SAFE_INTEGER
+Number.MIN_SAFE_INTEGER
+Number.isSafeInteger()
+```
+
+## Math拓展
+
+```javascript
+Math.trunc()	//去除小数，返回整数
+Math.sign()		//用来判断
+Math.cbrt()	  //计算一个数的立方根
+```
+
+## Proxy
+
+在 ES6 标准中新增的一个非常强大的功能是 Proxy，它可以自定义一些常用行为如查找、赋值、枚举、函数调用等
+
+### 基本语法
+
+``` javascript
+let p = new Proxy(target, handler)
+target //let p = new Proxy(target, handler)
+handler //一个对象，其属性是当执行一个操作时定义代理的行为的函数
+```
+
+### 拦截操作场景
+
+#### 场景一
+
+从服务端获取的数据希望是只读
+
+```js
+for (let [key] of Object.entries(response.data)) {
+    Object.defineProperty(response.data, key, {
+        writable: false
+    })
+}
+```
+
+#### 场景二
+
+数据校验，这里将数据校验放在另外的文件中
+
+```js
+export default (obj, key, value) => {
+    if (Reflect.has(key) && value > 20) {
+        obj[key] = value
+    }
+}
+
+import Validator from './Validator'
+let data = new Proxy(response.data, {
+    set: Validator
+})
+```
+
+#### 场景三
+
+对读写进行监控，在全局对象上，添加了 error 监听
+
+```js
+let validator = {
+    set(target, key, value) {
+        if (key === 'age') {
+            if (typeof value !== 'number' || Number.isNaN(value)) {
+                throw new TypeError('Age must be a number')
+            }
+            if (value <= 0) {
+                throw new TypeError('Age must be a positive number')
+            }
+        }
+        return true
+    }
+}
+const person = {
+    age: 27
+}
+const proxy = new Proxy(person, validator)
+proxy.age = 'foo'
+// <- TypeError: Age must be a number
+proxy.age = NaN
+// <- TypeError: Age must be a number
+proxy.age = 0
+// <- TypeError: Age must be a positive number
+proxy.age = 28
+console.log(person.age)
+// <- 28
+
+// 添加监控
+window.addEventListener(
+    'error',
+    e => {
+        console.log(e.message) // Uncaught TypeError: Age must be a number
+    },
+    true
+)
+```
+
+场景四
+
+实例化对象，并且对象的 id 是独一无二的。
+
+```js
+class Component {
+    constructor() {
+        this.proxy = new Proxy({
+            id: Math.random().toString(36).slice(-8)
+        })
+    }
+    get id() {
+        return this.proxy.id
+    }
+}
+```
+
+### 常见拦截操作
+
+> 所有 Proxy 对象在实例化的时候，必须使用 target 对象的同名参数来接受，否则不能进行拦截。
+
+#### get
+
+拦截对象属性的读取，函数必须返回值
+
+```js
+arr = new Proxy(arr, {
+    get(target, prop) {
+        // console.log(target, prop)
+        return prop in target ? target[prop] : 'error'
+    }
+})
+```
+
+#### set
+
+拦截对象的赋值，函数必须返回 boolean
+
+```js
+arr = new Proxy(arr, {
+    set(target, prop, val) {
+        if (typeof val === 'number') {
+            target[prop] = val
+            return true
+        } else {
+            return false
+        }
+    }
+})
+```
+
+#### has
+
+拦截 in 操作，函数返回 boolean
+
+```js
+range = new Proxy(range, {
+    has(target, prop) {
+        return prop >= target.start && prop <= target.end
+    }
+})
+```
+
+#### ownKeys
+
+拦截Object.getOwnPropertyNames(proxy)、Object.getOwnPropertySymbols(proxy)、Object.keys(proxy)、for...in循环，返回一个数组
+
+```js
+userinfo = new Proxy(userinfo, {
+    ownKeys(target) {
+        return Object.keys(target).filter(key => !key.startsWith('_'))
+    }
+})
+```
+
+#### deleteProperty
+
+拦截delete proxy[propKey]的操作，返回一个布尔值
+
+```js
+deleteProperty(target, prop) { // 拦截删除
+        if (prop.startsWith('_')) {
+            throw new Error('不可删除')
+        } else {
+            delete target[prop]
+            return true
+        }
+    },
+```
+
+#### apply
+
+拦截 Proxy 实例作为函数调用的操作，比如proxy(...args)
+
+```js
+sum = new Proxy(sum, {
+    apply(target, ctx, args) {
+        return target(...args) * 2
+    }
+})
+```
+
+#### construct
+
+拦截 Proxy 实例作为构造函数调用的操作，比如new proxy(...args)
+
+```js
+User = new Proxy(User, {
+    construct(target, args, newTarget) {
+        console.log('construct')
+        return new target(...args)
+    }
+})
+```
+
+## Reflect
+
+### 设计目的
+
+- 将Object属于语言内部的方法放到Reflect上
+- 修改某些Object方法的返回结果，让其变得更合理
+- 让Object操作变成函数行为
+- Reflect对象的方法与Proxy对象的方法**一一对应**，只要是Proxy对象的方法，就能在Reflect对象上找到对应的方法。
+
+Reflect的所有属性和方法都是静态的（就像Math对象）
+
+#### 常用方法
+
+- Reflect.defineProperty()
+- Reflect.deleteProperty()
+- Reflect.getOwnPropertyDescriptor()
+- Reflect.set()
+- Reflect.get()
+- Reflect.has()
+- Reflect.apply()
+- Reflect.ownKeys()
+- Reflect.construct()
+- Reflect.preventExtensions()
+- Reflect.getPrototypeOf()
+- Reflect.setPrototypeOf()
+- Reflect.isExtensible()
+
+## Promise
+
+### 异步操作前置知识
+
+<img src='./async.png' style="zoom:50%;">
+
+
+```js
+//创建 XML 对象
+const url = 'http://jsonplaceholder.typicode.com/users'
+let xmlhttp
+if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
+    xmlhttp = new XMLHttpRequest()
+} else { // code for IE6, IE5
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP")
+}
+
+// 发送请求
+xmlhttp.open("GET", url, true)
+xmlhttp.send()
+
+// 服务端响应
+xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        //    console.log(xmlhttp.responseText)
+        let obj = JSON.parse(xmlhttp.responseText)
+        console.log(obj)
+    }
+}
+```
+
+### 基本语法
+
+语法
+
+```js
+const promise = new Promise(function(resolve, reject) {
+    // ... some code
+
+    if ( /* 异步操作成功 */ ) {
+        resolve(value)
+    } else {
+        reject(error)
+    }
+})
+```
+
+Promise.prototype.then()
+
+Promise.prototype.catch()
+
+Promise.resolve()
+
+```js
+//以下形式的语法糖，可以快速使用 Promise 的 resolve 状态
+new Promise(function(resolve) {
+    resolve(42)
+})
+```
+
+Promise.reject()
+
+```js
+//以下形式的语法糖，可以快速使用 Promise 的 resolve 状态
+new Promise(function(resolve, reject) {
+    reject(new Error('出错了'))
+})
+```
+
+Promise.all()
+
+Promise.race()
+
+## Generator
+
+Generator 就是可以控制迭代器的函数
+
+```js
+function* generatorForLoop() {
+    for (let i = 0; i < 5; i += 1) {
+        yield console.log(i)
+    }
+}
+
+//在获取迭代器的时候，Generator 需要执行一下
+const genForLoop = generatorForLoop()
+```
+
+### 基本语法
+
+#### 语法
+
+- 比普通函数多一个 *
+- 函数内部用 yield 来控制程序的执行的“暂停”
+- 函数的返回值通过调用 next 来“恢复”程序执行
+
+> Generator 函数的定义不能使用箭头函数，否则会触发 SyntaxError 错误
+
+#### yield 表达式
+
+> yield 关键字用来暂停和恢复一个生成器函数
 
