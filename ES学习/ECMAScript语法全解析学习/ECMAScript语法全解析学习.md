@@ -1287,3 +1287,130 @@ const genForLoop = generatorForLoop()
 
 > yield 关键字用来暂停和恢复一个生成器函数
 
+1. yield 在函数内的返回值是 undefined，使用 .next() 返回值正常
+
+2. yeild * 是委托给另一个遍历器对象或者可遍历对象
+
+3. Generator 对象的 next 方法，遇到 yield 就暂停，并返回一个对象，这个对象包括两个属性：value 和 done
+
+#### 方法
+
+Generator 对象有几个方法，next、return、throw
+
+##### next([value])
+
+next 是可以接受参数的，这个参数可以让你在 Generator 外部给内部传递数据，而这个参数就是作为 yield 的返回值
+
+> 要注意，首次使用 next() 的时候，传入的参数往往无效。
+
+##### return([value])
+
+return 使 Generator 遍历终止，也可以携带参数
+
+##### throw()
+
+可以通过 throw 方法在 Generator 外部控制内部执行的“终断”
+
+#### 应用场景
+
+场景一
+
+异步操作，按顺序读取
+
+```js
+function request(url) {
+    ajax(url, res => {
+        getData.next(res)
+    })
+}
+
+function* gen() {
+    let res1 = yield request('static/a.json')
+    console.log(res1)
+    let res2 = yield request('static/b.json')
+    console.log(res2)
+    let res3 = yield request('static/c.json')
+    console.log(res3)
+}
+let getData = gen()
+getData.next()
+```
+
+场景二
+
+无限生成器
+
+```js
+function* count(x = 1) {
+    while (true) {
+        if (x % 7 === 0) {
+            yield x
+        }
+        x++
+    }
+}
+// es5中就是个死循环 因为es5的循环需要有个终止值，但我们这个需求没有终止，一直在数数
+let n = count()
+console.log(n.next().value)
+console.log(n.next().value)
+console.log(n.next().value)
+console.log(n.next().value)
+console.log(n.next().value)
+console.log(n.next().value)
+```
+
+## Iterator
+
+### 基本语法
+
+Iterator 是用来实现自定义遍历的接口
+
+1. 迭代器协议
+
+- 是一个对象
+- 对象包含一个无参函数 next()
+- next 返回一个对象，对象包含 done 和 value 属性
+
+```js
+authors[Symbol.iterator] = function() {
+    let allAuthors = this.allAuthors
+    let keys = Reflect.ownKeys(allAuthors)
+    let values = []
+    return {
+        next() {
+            if (!values.length) {
+                if (keys.length) {
+                    values = allAuthors[keys[0]]
+                    keys.shift()
+                }
+            }
+            return {
+                done: !values.length,
+                value: values.shift()
+            }
+        }
+    }
+}
+```
+
+2. 可迭代协议
+
+可迭代协议允许 JavaScript 对象去定义或定制它们的迭代行为
+
+为了变成可迭代对象， 一个对象必须实现 @@iterator 方法, 意思是这个对象（或者它原型链 prototype chain 上的某个对象）必须有一个名字是 Symbol.iterator 的属性:
+
+| 属性 | 值 | 
+|:--:|:--:|
+| [Symbol.iterator] | 	返回一个对象的无参函数，被返回对象符合迭代器协议 |
+
+### Generator
+
+Generator 函数，拥有 next()，执行返回 {done, value }，符合迭代器协议
+
+## Module
+
+1. export
+2. as
+3. export default
+4. import
+
