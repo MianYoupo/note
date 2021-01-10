@@ -345,3 +345,41 @@ for(var [name, value] of es6) {
 
 ### 类似数组的对象
 
+对字符串来说 for...of 循环是可以正确识别 32 位 UTF-16 字符
+
+```js
+for(let x of 'a\ud83d\udc0a') {
+  console.log(x);
+}
+// a
+// 🐊
+```
+
+并不是所有类数组的对象都有 Iterator 接口, 可以使用 Array.form 方法将其转换为数组
+
+### 对象
+
+对于普通的对象, for...of 结构不能直接使用, 必须部署 Iterator 接口后才能使用
+
+一种方式是使用 Object.keys() 将对象的键名生成一个数组, 然后遍历这个数组
+
+```js
+for(var key of Object.keys(someObject)){
+  console.log(key + ':' + someObject[key])
+}
+```
+
+```js
+function* entries(obj) {
+  for(let key of Object.keys(obj)){
+    yield [key,obj[key]]
+  }
+}
+
+for(let [key,value] of entries(obj)){
+  console.log(key, '->', value)
+}
+```
+
+## 与其他遍历语法的比较
+

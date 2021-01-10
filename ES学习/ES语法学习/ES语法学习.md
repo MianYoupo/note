@@ -55,7 +55,7 @@ Object.values() 返回一个数组，其元素是在对象上找到的可枚举�
 
 Object.entries()方法返回一个给定对象自身可枚举属性的键值对数组
 
-#### Object.getOwnPropertyDescriptor
+### Object.getOwnPropertyDescriptor
 
 描述符
 

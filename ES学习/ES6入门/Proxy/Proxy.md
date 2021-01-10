@@ -63,8 +63,6 @@ console.log(fproxy.foo);
 console.log(new fproxy(1, 2));
 ```
 
-## Proxy 实例方法
-
 ## get()
 
 get 方法拦截某个属性的**读取操作**, 接收三个参数, 最后的参数可选(目标对象, 属性名, proxy实例本身)
